@@ -1,16 +1,15 @@
-export async function onRequestPost(context) {
+submit_js = """export async function onRequestPost(context) {
   try {
     const formData = await context.request.formData();
     const name = formData.get("name");
     const email = formData.get("email");
     const interest = formData.get("interest");
 
-    // Build MailChannels payload
     const mailPayload = {
       personalizations: [
         {
-          to: [{ email: email }], // Applicant
-          cc: [{ email: "app@swamiginstitute.com" }], // You
+          to: [{ email: email }],
+          cc: [{ email: "app@swamiginstitute.com" }],
           subject: "🌀 SwamiG Institute Application Received"
         }
       ],
@@ -21,7 +20,7 @@ export async function onRequestPost(context) {
       content: [
         {
           type: "text/plain",
-          value: `Dear ${name},\n\nThank you for applying to the SwamiG Institute.\n\nYou selected: ${interest}\n\nWe will review your application and contact you soon.\n\nAse,\nSwamiG Institute`
+          value: `Dear ${name},\\n\\nThank you for applying to the SwamiG Institute.\\n\\nYou selected: ${interest}\\n\\nWe will review your application and contact you soon.\\n\\nAse,\\nSwamiG Institute`
         }
       ]
     };
@@ -49,3 +48,4 @@ export async function onRequestPost(context) {
     });
   }
 }
+"""
