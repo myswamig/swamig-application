@@ -5,47 +5,45 @@ export async function onRequestPost(context) {
     const email = formData.get("email");
     const interest = formData.get("interest");
 
-    // Email content
-    const subject = `New Application from ${name}`;
-    const body = `
-      A new applicant has submitted the form:\n
-      Name: ${name}\n
-      Email: ${email}\n
-      Interest: ${interest}
-    `;
+    // Build MailChannels payload
+    const mailPayload = {
+      personalizations: [
+        {
+          to: [{ email: email }], // Applicant
+          cc: [{ email: "app@swamiginstitute.com" }], // You
+          subject: "🌀 SwamiG Institute Application Received"
+        }
+      ],
+      from: {
+        email: "noreply@swamiginstitute.com",
+        name: "SwamiG Institute"
+      },
+      content: [
+        {
+          type: "text/plain",
+          value: `Dear ${name},\n\nThank you for applying to the SwamiG Institute.\n\nYou selected: ${interest}\n\nWe will review your application and contact you soon.\n\nAse,\nSwamiG Institute`
+        }
+      ]
+    };
 
-    const response = await fetch("https://api.mailchannels.net/tx/v1/send", {
+    const sendEmail = await fetch("https://api.mailchannels.net/tx/v1/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        personalizations: [{
-          to: [{ email: "app@swamiginstitute.com" }],
-          cc: [{ email }],
-          subject
-        }],
-        from: {
-          email: "no-reply@swamiginstitute.com",  // Must be a domain you control via Cloudflare
-          name: "SwamiG Institute"
-        },
-        content: [{
-          type: "text/plain",
-          value: body
-        }]
-      })
+      body: JSON.stringify(mailPayload)
     });
 
-    if (!response.ok) {
-      console.error("MailChannels failed", await response.text());
+    if (!sendEmail.ok) {
+      throw new Error("Email failed to send");
     }
 
-    return new Response(JSON.stringify({ message: "Application received" }), {
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
 
   } catch (err) {
-    console.error("Error processing form:", err);
-    return new Response(JSON.stringify({ error: "Form processing failed" }), {
+    console.error("Error:", err);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
