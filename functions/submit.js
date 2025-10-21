@@ -1,4 +1,4 @@
-submit_js = """export async function onRequestPost(context) {
+export async function onRequestPost(context) {
   try {
     const formData = await context.request.formData();
     const name = formData.get("name");
@@ -20,7 +20,7 @@ submit_js = """export async function onRequestPost(context) {
       content: [
         {
           type: "text/plain",
-          value: `Dear ${name},\\n\\nThank you for applying to the SwamiG Institute.\\n\\nYou selected: ${interest}\\n\\nWe will review your application and contact you soon.\\n\\nAse,\\nSwamiG Institute`
+          value: `Dear ${name},\n\nThank you for applying to the SwamiG Institute.\n\nYou selected: ${interest}\n\nWe will review your application and contact you soon.\n\nAse,\nSwamiG Institute`
         }
       ]
     };
@@ -48,4 +48,3 @@ submit_js = """export async function onRequestPost(context) {
     });
   }
 }
-"""
