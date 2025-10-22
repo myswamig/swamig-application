@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwamiG Institute Application</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+    #thank-you { display: none; margin-top: 20px; color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>SwamiG Institute: Divination Module Application</h2>
+
+  <form id="application-form">
+    <label for="name">Name:</label><br>
+    <input type="text" name="name" id="name" required><br><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" name="email" id="email" required><br><br>
+
+    <label for="interest">Divination Interest:</label><br>
+    <select name="interest" id="interest">
+      <option value="Merindilogun">Merindilogun</option>
+      <option value="Obi Abata">Obi Abata</option>
+      <option value="Four Cowrie">Four Cowrie</option>
+      <option value="Card Divination">Card Divination</option>
+      <option value="Custom System">Custom System</option>
+    </select><br><br>
+
+    <button type="submit">Submit Application</button>
+  </form>
+
+  <div id="thank-you">✅ Thank you for your application. We will be in touch shortly.</div>
+
+  <script>
+    const form = document.getElementById('application-form');
+    const thankYou = document.getElementById('thank-you');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const response = await fetch('/submit', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        thankYou.style.display = 'block';
+      } else {
+        alert('There was an error submitting your application. Please email us app@swamiginstitute.com .');
+      }
+    });
+  </script>
+</body>
+</html>
