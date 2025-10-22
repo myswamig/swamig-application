@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwamiG Institute Application</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+    #thank-you { display: none; margin-top: 20px; color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>SwamiG Institute: Divination Module Application</h2>
+
+ <form id="application-form" novalidate>
+    <!-- Contact -->
+    <div style="display:grid;gap:14px;grid-template-columns:1fr 1fr;">
+      <label for="legal_name" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Legal name <b style="color:#ef4444">*</b></span>
+        <input id="legal_name" name="legal_name" required placeholder="First Last" autocomplete="name" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="preferred_name" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Preferred name with meaning</span>
+        <input id="preferred_name" name="preferred_name" placeholder="If different" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="email" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Email <b style="color:#ef4444">*</b></span>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="phone" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Phone (WhatsApp ok)</span>
+        <input id="phone" name="phone" placeholder="+1 (___) ___-____" autocomplete="tel" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+    </div>
+
+    <!-- Initiation details -->
+    <div style="display:grid;gap:14px;grid-template-columns:1fr 1fr;margin-top:14px;">
+      <label for="role" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Initiation role <b style="color:#ef4444">*</b></span>
+        <select id="role" name="role" required style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+          <option value="" selected disabled>Choose…</option>
+          <option>Oba</option>
+          <option>Queen Mother</option>
+          <option>Babalawo</option>
+          <option>Iyanifa</option>
+          <option>Babalorisa</option>
+          <option>Iyalorisa</option>
+          <option>Aborisha</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <label for="primary_orisha" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Primary Orisha</span>
+        <input id="primary_orisha" name="primary_orisha" placeholder="e.g., Oshun, Shàngó, Obatala" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="lineage" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Lineage / Ile <b style="color:#ef4444">*</b></span>
+        <input id="lineage" name="lineage" required placeholder="House / Ile" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="teacher" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Oluwo / Iyalo/Oba name/ Teacher</span>
+        <input id="teacher" name="teacher" placeholder="Name(s)" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="initiation_date" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Initiation date</span>
+        <input id="initiation_date" name="initiation_date" type="date" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+
+      <label for="initiation_location" style="display:flex;flex-direction:column;gap:6px;">
+        <span>Initiation location</span>
+        <input id="initiation_location" name="initiation_location" placeholder="City, Country" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
+      </label>
+    </div>
+
+    <!-- Study Interests -->
+    <fieldset style="margin-top:14px;border:1px solid #e2e8f0;border-radius:12px;padding:12px;">
+      <legend style="padding:0 6px;color:#334155;">Study interests</legend>
+      <div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+        <label><input type="checkbox" name="study_interests" value="Merindilogun"> Merindilogun</label>
+        <label><input type="checkbox" name="study_interests" value="Orisha-Pele"> Orisha-Pele</label>
+        <label><input type="checkbox" name="study_interests" value="Obi-Orisha"> Obi Orisha</label>
+        <label><input type="checkbox" name="study_interests" value="Obi Abata"> Obi Abata</label>
+        <label><input type="checkbox" name="study_interests" value="Four Cowrie"> Four Cowrie</label>
+        <label><input type="checkbox" name="study_interests" value="Card Divination"> Card Divination</label>
+        <label><input type="checkbox" name="study_interests" value="Own System"> My own system</label>
+      </div>
+    </fieldset>
+
+    <!-- Goals / experience -->
+    <label for="goals" style="display:flex;flex-direction:column;gap:6px;margin-top:14px;">
+      <span>Goals & relevant experience</span>
+      <textarea id="goals" name="goals" rows="5" placeholder="Tell us briefly what you seek to learn, your experience, and any accessibility needs." style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;"></textarea>
+    </label>
+
+    <!-- Consent -->
+    <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;">
+      <input type="checkbox" name="agree_ethics" required>
+      <span>I affirm I will honor SwamiG Institute ethics, Iwapele, the Laws of Maat and respect institute boundaries, and consent to processing my data for enrollment and scheduling. <b style="color:#ef4444">*</b></span>
+    </label>
+
+    <!-- Anti-spam honeypot -->
+    <input type="text" name="website" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" tabindex="-1">
+
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button type="submit" style="padding:10px 16px;border:0;border-radius:10px;background:#111827;color:white;cursor:pointer;">Submit application</button>
+      <span id="sgi-status" aria-live="polite" style="align-self:center;color:#334155;"></span>
+    </div>
+  </form>
+
+  <div id="thank-you">? Thank you for your application. We will be in touch shortly, verly shortly.</div>
+
+  <script>
+    const form = document.getElementById('application-form');
+    const thankYou = document.getElementById('thank-you');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const response = await fetch('/submit', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        thankYou.style.display = 'block';
+      } else {
+        alert('There was an error submitting your application. Please email us app@swamiginstitute.com .');
+      }
+    });
+  </script>
+</body>
+</html>
+
