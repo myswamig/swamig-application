@@ -5,12 +5,11 @@ export async function onRequestPost(context) {
     const email = formData.get("email");
     const interest = formData.get("interest");
 
-    // Build MailChannels payload
     const mailPayload = {
       personalizations: [
         {
-          to: [{ email: email }], // Applicant
-          cc: [{ email: "app@swamiginstitute.com" }], // You
+          to: [{ email: email }],
+          cc: [{ email: "app@swamiginstitute.com" }],
           subject: "🌀 SwamiG Institute Application Received"
         }
       ],
