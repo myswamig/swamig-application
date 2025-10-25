@@ -17,7 +17,7 @@
   <p style="margin:0 0 18px;color:#475569;">Complete this application to begin. Submissions are securely delivered and logged.</p>
 
   <!-- ✅ FORM START -->
-  <form id="applicationForm" action="https://swamig-submit.YOURACCOUNT.workers.dev" method="POST" novalidate>
+  <form id="applicationForm" action="https://swamig-submit.fasuuruate.workers.dev" method="POST" novalidate>
     <div style="display:grid;gap:14px;grid-template-columns:1fr 1fr;">
       <label for="legal_name" style="display:flex;flex-direction:column;gap:6px;">
         <span>Legal name <b style="color:#ef4444">*</b></span>
@@ -62,7 +62,7 @@ document.getElementById("applicationForm").addEventListener("submit", async (eve
     });
 
     if (response.ok) {
-      alert("✅ Your application was submitted successfully. Thank you!");
+      alert("✅ Your application was submitted successfully. Thank you! We acknowledge your courage");
       form.reset();
     } else {
       alert("⚠️ Submission failed. Please try again.");
