@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Application to SwamiG Institute programs, spiritual training, divination study, and initiation pathways.">
+  <title>Application | SwamiG Institute</title>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
+  <style>
+    :root {
+      --bg: #07080d;
+      --panel: #11131c;
+      --panel-2: #171a26;
+      --panel-3: #0d0f17;
+      --ink: #f7f4e8;
+      --muted: #b9b7ad;
+      --gold: #d6b85a;
+      --gold-2: #f2dc91;
+      --purple: #7650c8;
+      --line: rgba(255,255,255,.12);
+      --danger: #ff9d9d;
+      --success: #91e6af;
+      --shadow: 0 22px 60px rgba(0,0,0,.42);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(118,80,200,.23), transparent 34rem),
+        radial-gradient(circle at 100% 18%, rgba(214,184,90,.15), transparent 30rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: var(--gold-2); }
+    button, input, select, textarea { font: inherit; }
+
+    .page {
+      width: min(100% - 28px, 980px);
+      margin: 0 auto;
+      padding: 28px 0 48px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(23,26,38,.97), rgba(14,16,24,.97));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+    }
+
+    .brand-logo {
+      width: 78px;
+      height: 78px;
+      flex: 0 0 auto;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(214,184,90,.7);
+      box-shadow: 0 0 0 5px rgba(214,184,90,.08);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 5vw, 2.7rem);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+
+    .brand h1 sup {
+      color: var(--gold);
+      font-size: .42em;
+      top: -.8em;
+      position: relative;
+    }
+
+    .brand p { margin: 7px 0 0; color: var(--muted); }
+
+    .eyebrow {
+      color: var(--gold-2);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-size: .76rem;
+    }
+
+    .gallery { display: flex; gap: 9px; margin-top: 13px; }
+    .gallery img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+    }
+
+    main { padding: clamp(22px, 5vw, 40px); }
+    main h2 {
+      margin: 0;
+      font-size: clamp(1.9rem, 5vw, 2.7rem);
+      letter-spacing: -.03em;
+    }
+
+    .intro {
+      margin: 8px 0 22px;
+      color: var(--muted);
+      max-width: 76ch;
+    }
+
+    .notice {
+      margin-bottom: 22px;
+      padding: 14px 16px;
+      border: 1px solid rgba(214,184,90,.3);
+      border-radius: 14px;
+      background: rgba(214,184,90,.06);
+      color: var(--muted);
+    }
+
+    .notice strong { color: var(--gold-2); }
+
+    .progress-shell {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 0 22px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(13,15,23,.94);
+      backdrop-filter: blur(8px);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 9px;
+    }
+
+    .progress-top strong { color: var(--ink); }
+
+    .progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .progress-bar {
+      width: 16.6667%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--purple), var(--gold));
+      transition: width .25s ease;
+    }
+
+    .step {
+      display: none;
+      animation: fadeIn .22s ease;
+    }
+
+    .step.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-heading {
+      margin: 0 0 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-heading h3 {
+      margin: 0;
+      font-size: clamp(1.35rem, 4vw, 1.8rem);
+    }
+
+    .section-heading p { margin: 5px 0 0; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label, legend { font-weight: 750; }
+    .required { color: var(--danger); }
+    .hint { color: var(--muted); font-size: .86rem; font-weight: 450; }
+
+    input, select, textarea {
+      width: 100%;
+      color: var(--ink);
+      background: var(--panel-3);
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 12px;
+      padding: 12px 13px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(214,184,90,.14);
+    }
+
+    textarea { resize: vertical; min-height: 118px; }
+    textarea.tall { min-height: 160px; }
+    select option { color: #111; }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.018);
+    }
+
+    fieldset.full { grid-column: 1 / -1; }
+    legend { padding: 0 7px; }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+      margin-top: 7px;
+    }
+
+    .options.one { grid-template-columns: 1fr; }
+
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .choice input {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 3px;
+      padding: 0;
+      accent-color: var(--gold);
+    }
+
+    .choice span { min-width: 0; }
+
+    .agreement-box {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid rgba(214,184,90,.28);
+      border-radius: 15px;
+      background: rgba(214,184,90,.05);
+    }
+
+    .turnstile-wrap {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+    }
+
+    .turnstile-note { color: var(--muted); font-size: .9rem; }
+
+    .honeypot {
+      position: absolute !important;
+      left: -10000px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 25px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .actions-right { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: .62; transform: none; }
+
+    .primary {
+      color: #17120a;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold));
+    }
+
+    .secondary {
+      color: var(--ink);
+      background: #252938;
+      border: 1px solid var(--line);
+    }
+
+    .ghost {
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--line);
+    }
+
+    .status {
+      display: none;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      white-space: pre-line;
+    }
+
+    .status.show { display: block; }
+    .status.success {
+      color: var(--success);
+      background: rgba(50,155,88,.12);
+      border-color: rgba(145,230,175,.3);
+    }
+    .status.error {
+      color: var(--danger);
+      background: rgba(190,55,55,.12);
+      border-color: rgba(255,142,142,.3);
+    }
+
+    .privacy {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 16px 0;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    footer nav { margin-top: 7px; }
+
+    @media (max-width: 720px) {
+      .site-header { align-items: flex-start; }
+      .brand-logo { width: 64px; height: 64px; }
+      .grid, .options { grid-template-columns: 1fr; }
+      .field.full, fieldset.full { grid-column: auto; }
+      .actions { align-items: stretch; }
+      .actions-right { width: 100%; }
+      .actions button, .actions-right button { width: 100%; }
+      .progress-top { font-size: .82rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <section class="card" aria-labelledby="application-title">
+      <header class="site-header">
+        <a href="https://swamiginstitute.com" aria-label="Visit SwamiG Institute">
+          <img class="brand-logo" src="SwamiG.gif" alt="SwamiG Institute logo">
+        </a>
+
+        <div class="brand">
+          <div class="eyebrow">Modules of Enlightenment</div>
+          <h1>SwamiG Institute<sup>2</sup></h1>
+          <p>For the Diaspora of North America</p>
+
+          <div class="gallery" aria-label="Divination training imagery">
+            <img src="tn_10.jpg" alt="Divination implement">
+            <img src="tn_2.jpg" alt="Divination implement">
+            <img src="tn_4cowrie.jpg" alt="Four cowrie shells">
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="eyebrow">Ifá • Iṣẹ̀ṣe • Orisha</div>
+        <h2 id="application-title">Institute Application</h2>
+        <p class="intro">
+          This application helps SwamiG Institute understand your background, interests, readiness, and desired pathway. Please answer carefully and honestly. Submission does not guarantee acceptance or initiation.
+        </p>
+
+        <div class="notice">
+          <strong>Important:</strong> All initiations and major spiritual pathways are subject to review and divination confirmation before commencing. Do not include Social Security numbers, banking details, passwords, or unnecessary medical information.
+        </div>
+
+        <form id="applicationForm" action="/submit" method="post" novalidate>
+          <div class="progress-shell" aria-label="Application progress">
+            <div class="progress-top">
+              <strong id="stepTitle">Step 1: Applicant Information</strong>
+              <span id="stepCount">1 of 6</span>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div id="progressBar" class="progress-bar"></div>
+            </div>
+          </div>
+
+          <!-- STEP 1 -->
+          <section class="step active" data-title="Applicant Information">
+            <div class="section-heading">
+              <h3>Applicant Information</h3>
+              <p>Tell us how to identify and contact you.</p>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="legal_name">Legal name <span class="required">*</span></label>
+                <input id="legal_name" name="legal_name" required maxlength="120" autocomplete="name" placeholder="First and last name">
+              </div>
+
+              <div class="field">
+                <label for="preferred_name">Preferred or spiritual name</label>
+                <input id="preferred_name" name="preferred_name" maxlength="160" placeholder="Preferred name, title, or spiritual name">
+              </div>
+
+              <div class="field full">
+                <label for="name_meaning">Meaning of preferred or spiritual name</label>
+                <input id="name_meaning" name="name_meaning" maxlength="300" placeholder="Optional meaning, lineage, or context">
+              </div>
+
+              <div class="field">
+                <label for="email">Email <span class="required">*</span></label>
+                <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+              </div>
+
+              <div class="field">
+                <label for="phone">Phone <span class="required">*</span></label>
+                <input id="phone" name="phone" type="tel" required maxlength="40" autocomplete="tel" placeholder="+1 (___) ___-____">
+              </div>
+
+              <div class="field">
+                <label for="city">City <span class="required">*</span></label>
+                <input id="city" name="city" required maxlength="100" autocomplete="address-level2">
+              </div>
+
+              <div class="field">
+                <label for="state_region">State, province, or region <span class="required">*</span></label>
+                <input id="state_region" name="state_region" required maxlength="100" autocomplete="address-level1">
+              </div>
+
+              <div class="field">
+                <label for="country">Country <span class="required">*</span></label>
+                <input id="country" name="applicant_country" required maxlength="100" autocomplete="country-name" value="United States">
+              </div>
+
+              <div class="field">
+                <label for="timezone">Time zone <span class="required">*</span></label>
+                <select id="timezone" name="timezone" required>
+                  <option value="">Select one</option>
+                  <option>Eastern Time</option>
+                  <option>Central Time</option>
+                  <option>Mountain Time</option>
+                  <option>Pacific Time</option>
+                  <option>Alaska Time</option>
+                  <option>Hawaii Time</option>
+                  <option>Atlantic Time</option>
+                  <option>Outside North America</option>
+                </select>
+              </div>
+
+              <fieldset class="full">
+                <legend>Preferred contact method <span class="required">*</span></legend>
+                <div class="options">
+                  <label class="choice"><input type="radio" name="contact_method" value="Email" required><span>Email</span></label>
+                  <label class="choice"><input type="radio" name="contact_method" value="Telephone"><span>Telephone call</span></label>
+                  <label class="choice"><input type="radio" name="contact_method" value="Text message"><span>Text message</span></label>
+                  <label class="choice"><input type="radio" name="contact_method" value="WhatsApp"><span>WhatsApp</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="full">
+                <legend>Age confirmation <span class="required">*</span></legend>
+                <div class="options one">
+                  <label class="choice">
+                    <input type="checkbox" name="age_confirmed" value="yes" required>
+                    <span>I confirm that I am at least 18 years old, or that a parent or legal guardian will participate in the application process.</span>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </section>
+
+          <!-- STEP 2 -->
+          <section class="step" data-title="Spiritual Background">
+            <div class="section-heading">
+              <h3>Spiritual Background</h3>
+              <p>Share the traditions, teachers, and practices that have shaped your journey.</p>
+            </div>
+
+            <div class="grid">
+              <div class="field full">
+                <label for="current_path">Current spiritual or religious path</label>
+                <input id="current_path" name="current_path" maxlength="300" placeholder="Examples: Ifá, Orisha, Khemetic, Christian, Muslim, ancestral, independent, exploring">
+              </div>
+
+              <div class="field full">
+                <label for="years_practice">Years of active spiritual study or practice</label>
+                <select id="years_practice" name="years_practice">
+                  <option value="">Select one</option>
+                  <option>New or exploring</option>
+                  <option>Less than 1 year</option>
+                  <option>1–3 years</option>
+                  <option>4–7 years</option>
+                  <option>8–15 years</option>
+                  <option>More than 15 years</option>
+                </select>
+              </div>
+
+              <fieldset class="full">
+                <legend>Initiations, consecrations, or formal spiritual milestones</legend>
+                <div class="options">
+                  <label class="choice"><input type="checkbox" name="initiations" value="None"><span>None</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Ilekes"><span>Ilekes</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Warriors"><span>Warriors</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Hand of Ifa"><span>Hand of Ifá</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Orisha initiation"><span>Orisha initiation</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Ifa initiation"><span>Ifá initiation</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Khemetic initiation"><span>Khemetic initiation</span></label>
+                  <label class="choice"><input type="checkbox" name="initiations" value="Other"><span>Other</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field full">
+                <label for="initiation_details">Initiation details, dates, houses, teachers, or lineage</label>
+                <textarea id="initiation_details" name="initiation_details" maxlength="3000" placeholder="List only what you are comfortable sharing. Include who initiated or trained you when relevant."></textarea>
+              </div>
+
+              <fieldset class="full">
+                <legend>Divination systems studied or practiced</legend>
+                <div class="options">
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="None"><span>None</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Obi Abata"><span>Obi Abata</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Four Cowrie"><span>Four Cowrie Shell</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Merindilogun"><span>Merindilogun</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Opele"><span>Ọ̀pẹ̀lẹ̀</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Ikin Ifa"><span>Ikin Ifá</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Tarot or cards"><span>Tarot or card divination</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Metu Neter"><span>Metu Neter</span></label>
+                  <label class="choice"><input type="checkbox" name="divination_systems" value="Other"><span>Other system</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field full">
+                <label for="training_details">Training and practical experience</label>
+                <textarea id="training_details" name="training_details" maxlength="3500" placeholder="Describe courses, teachers, number of documented casts or readings, clients served, and your present level of confidence."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="daily_practice">Current daily or weekly spiritual practice</label>
+                <textarea id="daily_practice" name="daily_practice" maxlength="2500" placeholder="Prayer, altar service, meditation, offerings, study, divination, community service, or other disciplines."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 3 -->
+          <section class="step" data-title="Program Interests">
+            <div class="section-heading">
+              <h3>Program Interests</h3>
+              <p>Select the pathway that most closely matches your present goal.</p>
+            </div>
+
+            <div class="grid">
+              <div class="field full">
+                <label for="interest">Primary interest <span class="required">*</span></label>
+                <select id="interest" name="interest" required>
+                  <option value="">Select one</option>
+                  <option>Personal divination or spiritual consultation</option>
+                  <option>Ilekes preparation</option>
+                  <option>Warriors preparation</option>
+                  <option>Hand of Ifá preparation</option>
+                  <option>Obi Abata divination training</option>
+                  <option>Four Cowrie Shell divination training</option>
+                  <option>Merindilogun training</option>
+                  <option>Ọ̀pẹ̀lẹ̀ training</option>
+                  <option>Iyawo Institute pathway</option>
+                  <option>Priesthood or initiation pathway</option>
+                  <option>Continuing education for an initiated priest</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <fieldset class="full">
+                <legend>Additional interests</legend>
+                <div class="options">
+                  <label class="choice"><input type="checkbox" name="additional_interests" value="Auset/Yemojah - Devotion"><span>Auset/Yemojah — Transformational Devotion</span></label>
+                  <label class="choice"><input type="checkbox" name="additional_interests" value="Sekert/Olokun - Power"><span>Sekert/Olokun — Words of Power</span></label>
+                  <label class="choice"><input type="checkbox" name="additional_interests" value="Tehuti/Orunmila - Wisdom"><span>Tehuti/Orunmila — Infinite Wisdom</span></label>
+                  <label class="choice"><input type="checkbox" name="additional_interests" value="Ancestral restoration"><span>Ancestral restoration</span></label>
+                  <label class="choice"><input type="checkbox" name="additional_interests" value="Ethics and character"><span>Ethics, Ewe Pele, and character formation</span></label>
+                  <label class="choice"><input type="checkbox" name="additional_interests" value="Community priesthood"><span>Community service and priesthood</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field full">
+                <label for="message">Why are you applying to SwamiG Institute? <span class="required">*</span></label>
+                <textarea id="message" name="message" class="tall" required maxlength="2000" placeholder="Describe what brings you here now and why SwamiG Institute appears appropriate for your path."></textarea>
+                <span class="hint">This answer is also retained in the current basic D1 record.</span>
+              </div>
+
+              <div class="field full">
+                <label for="desired_outcome">What outcome do you hope to achieve?</label>
+                <textarea id="desired_outcome" name="desired_outcome" maxlength="2500" placeholder="Examples: personal clarity, disciplined practice, certification, divination competency, readiness for initiation, service to community."></textarea>
+              </div>
+
+              <fieldset class="full">
+                <legend>Have you previously applied to or studied with SwamiG Institute?</legend>
+                <div class="options">
+                  <label class="choice"><input type="radio" name="previous_sgi" value="No"><span>No</span></label>
+                  <label class="choice"><input type="radio" name="previous_sgi" value="Yes"><span>Yes</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field full">
+                <label for="previous_sgi_details">Previous SGI courses, consultations, initiations, or contact</label>
+                <textarea id="previous_sgi_details" name="previous_sgi_details" maxlength="2200" placeholder="Include course titles, approximate dates, and any prior name or email used."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="referral_source">How did you learn about SwamiG Institute?</label>
+                <select id="referral_source" name="referral_source">
+                  <option value="">Select one</option>
+                  <option>SwamiGInstitute.com</option>
+                  <option>YourBabalawo.com</option>
+                  <option>Search engine</option>
+                  <option>Facebook or social media</option>
+                  <option>YouTube</option>
+                  <option>Referral from an initiate or student</option>
+                  <option>Referral from a priest or elder</option>
+                  <option>Previous relationship with Baba SwamiG</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 4 -->
+          <section class="step" data-title="Commitment and Readiness">
+            <div class="section-heading">
+              <h3>Commitment and Readiness</h3>
+              <p>Training requires time, discipline, communication, and consistent participation.</p>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="weekly_hours">Hours available each week <span class="required">*</span></label>
+                <select id="weekly_hours" name="weekly_hours" required>
+                  <option value="">Select one</option>
+                  <option>1–2 hours</option>
+                  <option>3–5 hours</option>
+                  <option>6–8 hours</option>
+                  <option>9–12 hours</option>
+                  <option>More than 12 hours</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="start_timing">Preferred starting time</label>
+                <select id="start_timing" name="start_timing">
+                  <option value="">Select one</option>
+                  <option>As soon as approved</option>
+                  <option>Within 30 days</option>
+                  <option>Within 2–3 months</option>
+                  <option>Later this year</option>
+                  <option>Only gathering information</option>
+                </select>
+              </div>
+
+              <fieldset class="full">
+                <legend>Sunday Zoom participation <span class="required">*</span></legend>
+                <div class="options one">
+                  <label class="choice"><input type="radio" name="sunday_zoom" value="Yes" required><span>I can regularly attend Sunday Zoom sessions.</span></label>
+                  <label class="choice"><input type="radio" name="sunday_zoom" value="Sometimes"><span>I can attend some Sundays but may require accommodation.</span></label>
+                  <label class="choice"><input type="radio" name="sunday_zoom" value="No"><span>I cannot presently attend Sunday Zoom sessions.</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="full">
+                <legend>Technology readiness</legend>
+                <div class="options one">
+                  <label class="choice"><input type="checkbox" name="technology" value="Reliable internet"><span>I have reliable internet access.</span></label>
+                  <label class="choice"><input type="checkbox" name="technology" value="Zoom device"><span>I have a telephone, tablet, or computer capable of joining Zoom.</span></label>
+                  <label class="choice"><input type="checkbox" name="technology" value="Email and downloads"><span>I can use email, open links, download files, and submit assignments.</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset class="full">
+                <legend>Readiness for program responsibilities <span class="required">*</span></legend>
+                <div class="options one">
+                  <label class="choice"><input type="checkbox" name="readiness" value="Study" required><span>I am prepared to study assigned material and ask questions respectfully.</span></label>
+                  <label class="choice"><input type="checkbox" name="readiness" value="Practice" required><span>I am prepared to complete required spiritual practice, documentation, and casting exercises.</span></label>
+                  <label class="choice"><input type="checkbox" name="readiness" value="Communication" required><span>I am prepared to communicate when difficulties affect my participation.</span></label>
+                  <label class="choice"><input type="checkbox" name="readiness" value="Financial responsibility" required><span>I understand that some programs, materials, consultations, travel, ceremonies, or initiations may involve financial obligations disclosed separately.</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field full">
+                <label for="scheduling_limits">Scheduling limits or responsibilities we should consider</label>
+                <textarea id="scheduling_limits" name="scheduling_limits" maxlength="2200" placeholder="Work schedule, caregiving, accessibility, travel, time-zone restrictions, or other practical considerations."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="barriers">What barriers could interfere with successful completion?</label>
+                <textarea id="barriers" name="barriers" maxlength="2200" placeholder="Describe practical barriers and any reasonable support that may help you remain consistent."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 5 -->
+          <section class="step" data-title="Personal Statements">
+            <div class="section-heading">
+              <h3>Personal Statements</h3>
+              <p>Help us understand your character, purpose, and relationship to service.</p>
+            </div>
+
+            <div class="grid">
+              <div class="field full">
+                <label for="strengths">What strengths would you bring to this path?</label>
+                <textarea id="strengths" name="strengths" maxlength="2500" placeholder="Examples: discipline, patience, scholarship, spiritual sensitivity, leadership, compassion, reliability, technical skill."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="growth_areas">What areas of character or discipline are you actively improving?</label>
+                <textarea id="growth_areas" name="growth_areas" maxlength="2500" placeholder="Answer with honesty and without disclosing information that is unnecessarily private."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="service_vision">How do you hope to serve your family, ancestors, or community?</label>
+                <textarea id="service_vision" name="service_vision" maxlength="2800" placeholder="Describe the people, community, or purpose your training may ultimately support."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="ethical_challenge">Describe a time you handled an ethical challenge, conflict, or correction</label>
+                <textarea id="ethical_challenge" name="ethical_challenge" maxlength="3000" placeholder="Focus on what you learned, how you responded, and how your behavior changed."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="questions_for_sgi">Questions or concerns for SwamiG Institute</label>
+                <textarea id="questions_for_sgi" name="questions_for_sgi" maxlength="2500" placeholder="Ask about curriculum, eligibility, scheduling, fees, expectations, lineage, certification, or initiation requirements."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="anything_else">Anything else you want the review team to understand?</label>
+                <textarea id="anything_else" name="anything_else" maxlength="2500"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 6 -->
+          <section class="step" data-title="Agreements and Submission">
+            <div class="section-heading">
+              <h3>Agreements and Submission</h3>
+              <p>Review and affirm the statements below before submitting.</p>
+            </div>
+
+            <div class="agreement-box">
+              <label class="choice">
+                <input type="checkbox" name="accuracy_agreement" value="yes" required>
+                <span>I affirm that the information provided in this application is accurate to the best of my knowledge. <span class="required">*</span></span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="conduct_agreement" value="yes" required>
+                <span>I agree to communicate respectfully, maintain appropriate boundaries, and follow the ethical and instructional standards of SwamiG Institute. <span class="required">*</span></span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="divination_agreement" value="yes" required>
+                <span>I understand that acceptance into a course does not guarantee initiation, and that initiations must be confirmed by divination before commencing. <span class="required">*</span></span>
+              </label>
+
+              <label class="choice">
+                <input type="checkbox" name="no_guarantee_agreement" value="yes" required>
+                <span>I understand that spiritual consultation, divination, education, and ritual services do not guarantee a specific personal, financial, legal, medical, or relationship outcome. <span class="required">*</span></span>
+              </label>
+
+              <label class="choice">
+                <input id="consent" type="checkbox" name="consent" value="yes" required>
+                <span>I consent to SwamiG Institute storing and reviewing this application for admissions, program placement, divination, scheduling, and follow-up. <span class="required">*</span></span>
+              </label>
+            </div>
+
+            <div class="grid" style="margin-top:18px">
+              <div class="field">
+                <label for="signature_name">Type your full legal name as your signature <span class="required">*</span></label>
+                <input id="signature_name" name="signature_name" required maxlength="120" autocomplete="name">
+              </div>
+
+              <div class="field">
+                <label for="signature_date">Date <span class="required">*</span></label>
+                <input id="signature_date" name="signature_date" type="date" required>
+              </div>
+
+              <div class="honeypot" aria-hidden="true">
+                <label for="website">Website</label>
+                <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
+
+              <div class="field full">
+                <div id="turnstileContainer" class="turnstile-wrap">
+                  <span class="turnstile-note">Checking security configuration…</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="privacy">
+              Application information is used for review and follow-up. Avoid submitting highly sensitive identification, financial, password, or unnecessary health information through this form.
+            </p>
+          </section>
+
+          <input id="applicationData" type="hidden" name="application_data" value="">
+
+          <div class="actions">
+            <button id="previousButton" class="ghost" type="button" hidden>Previous</button>
+
+            <div class="actions-right">
+              <button id="nextButton" class="secondary" type="button">Continue</button>
+              <button id="submitButton" class="primary" type="submit" hidden>Submit Application</button>
+            </div>
+          </div>
+
+          <div id="formStatus" class="status" role="status" aria-live="polite"></div>
+        </form>
+      </main>
+    </section>
+
+    <footer>
+      © 2026 SwamiG Institute. Extending Royal Legacy on the shoulders of enlightened ancestors.
+      <nav><a href="https://swamiginstitute.com">SwamiGInstitute.com</a></nav>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById('applicationForm');
+    const steps = Array.from(document.querySelectorAll('.step'));
+    const previousButton = document.getElementById('previousButton');
+    const nextButton = document.getElementById('nextButton');
+    const submitButton = document.getElementById('submitButton');
+    const stepTitle = document.getElementById('stepTitle');
+    const stepCount = document.getElementById('stepCount');
+    const progressBar = document.getElementById('progressBar');
+    const formStatus = document.getElementById('formStatus');
+    const applicationData = document.getElementById('applicationData');
+    const signatureDate = document.getElementById('signature_date');
+    const turnstileContainer = document.getElementById('turnstileContainer');
+
+    let currentStep = 0;
+    let turnstileWidgetId = null;
+    let turnstileEnabled = false;
+
+    signatureDate.value = new Date().toISOString().slice(0, 10);
+
+    function showStatus(message, type) {
+      formStatus.textContent = message;
+      formStatus.className = `status show ${type}`;
+    }
+
+    function clearStatus() {
+      formStatus.textContent = '';
+      formStatus.className = 'status';
+    }
+
+    function updateStep() {
+      steps.forEach((step, index) => {
+        step.classList.toggle('active', index === currentStep);
+      });
+
+      const title = steps[currentStep].dataset.title || `Step ${currentStep + 1}`;
+      stepTitle.textContent = `Step ${currentStep + 1}: ${title}`;
+      stepCount.textContent = `${currentStep + 1} of ${steps.length}`;
+      progressBar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+
+      previousButton.hidden = currentStep === 0;
+      nextButton.hidden = currentStep === steps.length - 1;
+      submitButton.hidden = currentStep !== steps.length - 1;
+
+      clearStatus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep(step) {
+      const controls = Array.from(step.querySelectorAll('input, select, textarea'))
+        .filter(control => !control.disabled && control.type !== 'hidden');
+
+      for (const control of controls) {
+        if (!control.checkValidity()) {
+          control.reportValidity();
+          control.focus({ preventScroll: false });
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function formDataToObject(formElement) {
+      const result = {};
+      const data = new FormData(formElement);
+
+      for (const [key, value] of data.entries()) {
+        if (key === 'application_data') continue;
+
+        if (Object.prototype.hasOwnProperty.call(result, key)) {
+          if (!Array.isArray(result[key])) result[key] = [result[key]];
+          result[key].push(value);
+        } else {
+          result[key] = value;
+        }
+      }
+
+      return result;
+    }
+
+    function createSubmissionPayload() {
+      const allAnswers = formDataToObject(form);
+      applicationData.value = JSON.stringify({
+        form_version: 'SGI-LONG-2026-07',
+        submitted_answers: allAnswers
+      });
+
+      const payload = formDataToObject(form);
+      payload.application_data = applicationData.value;
+      return payload;
+    }
+
+    previousButton.addEventListener('click', () => {
+      if (currentStep > 0) {
+        currentStep -= 1;
+        updateStep();
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      if (!validateStep(steps[currentStep])) return;
+      if (currentStep < steps.length - 1) {
+        currentStep += 1;
+        updateStep();
+      }
+    });
+
+    async function configureTurnstile() {
+      try {
+        const response = await fetch('/api/config', {
+          headers: { Accept: 'application/json' },
+          cache: 'no-store'
+        });
+        const config = await response.json();
+
+        if (!config.turnstileSiteKey) {
+          turnstileContainer.innerHTML = '<span class="turnstile-note">Turnstile is not currently enabled.</span>';
+          return;
+        }
+
+        const renderWidget = () => {
+          if (!window.turnstile) {
+            window.setTimeout(renderWidget, 120);
+            return;
+          }
+
+          turnstileContainer.innerHTML = '';
+          turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+            sitekey: config.turnstileSiteKey,
+            theme: 'dark'
+          });
+          turnstileEnabled = true;
+        };
+
+        renderWidget();
+      } catch (error) {
+        turnstileContainer.innerHTML = '<span class="turnstile-note">The security check could not be loaded. Please refresh before submitting.</span>';
+      }
+    }
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      clearStatus();
+
+      if (!validateStep(steps[currentStep])) return;
+      if (!form.checkValidity()) {
+        const firstInvalid = form.querySelector(':invalid');
+        const invalidStep = steps.findIndex(step => step.contains(firstInvalid));
+        if (invalidStep >= 0) {
+          currentStep = invalidStep;
+          updateStep();
+          window.setTimeout(() => firstInvalid.reportValidity(), 150);
+        }
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting…';
+
+      try {
+        const payload = createSubmissionPayload();
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(result.error || 'The application could not be submitted.');
+        }
+
+        showStatus(
+          `Application received and saved.\nConfirmation: ${result.submissionId}\nPlease retain this confirmation number for your records.`,
+          'success'
+        );
+
+        form.reset();
+        signatureDate.value = new Date().toISOString().slice(0, 10);
+        currentStep = 0;
+        updateStep();
+
+        if (turnstileEnabled && window.turnstile && turnstileWidgetId !== null) {
+          window.turnstile.reset(turnstileWidgetId);
+        }
+      } catch (error) {
+        showStatus(error.message || 'A network error occurred. Please try again.', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit Application';
+      }
+    });
+
+    updateStep();
+    configureTurnstile();
+  </script>
+</body>
+</html>
