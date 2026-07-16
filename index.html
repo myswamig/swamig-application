@@ -180,8 +180,8 @@
         <form id="applicationForm" action="/submit" method="post">
           <div class="grid">
             <div class="field">
-              <label for="legal_name">Legal name <span class="required">*</span></label>
-              <input id="legal_name" name="legal_name" required maxlength="120" autocomplete="name" placeholder="First and last name">
+              <label for="legal_name">Government First Name <span class="required">*</span></label>
+              <input id="legal_name" name="legal_name" required maxlength="120" autocomplete="name" placeholder="MyFirstName">
             </div>
 
             <div class="field">
@@ -239,15 +239,15 @@
 
           <div class="actions">
             <button id="submitButton" class="primary" type="submit">Submit Application</button>
-            <a href="admin.html">Open the protected D1 review page</a>
+            <a href="admin.html">AdminOnly</a>
           </div>
           <div id="formStatus" class="status" role="status" aria-live="polite"></div>
         </form>
 
         <section class="test-panel" aria-labelledby="d1-test-title">
           <h3 id="d1-test-title">D1 connection test</h3>
-          <p>After deployment and database binding, this button confirms that the Pages Function can reach D1 and reports the number of saved applications.</p>
-          <button id="healthButton" class="secondary" type="button">Check D1 Connection</button>
+          <p>This button confirms the application info is secured</p>
+          <button id="healthButton" class="secondary" type="button">Check acceptance</button>
           <div id="healthResult" aria-live="polite"></div>
         </section>
       </main>
