@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/submit", "/api/*"],
+  "exclude": ["/SwamiG.gif", "/tn_10.jpg", "/tn_2.jpg", "/tn_4cowrie.jpg"]
+}

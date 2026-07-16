@@ -1,0 +1,10 @@
+name = "swamig-application"
+pages_build_output_dir = "."
+compatibility_date = "2026-07-15"
+
+# Rename this file to wrangler.toml after replacing the database ID.
+[[d1_databases]]
+binding = "DB"
+database_name = "swamig-applications"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"

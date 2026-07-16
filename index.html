@@ -1,75 +1,356 @@
-<section id="application-form" style="max-width:840px;margin:40px auto;padding:28px;border:1px solid #e5e7eb;border-radius:16px;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;">
-  <div class="wrap">
-    <a href="https://swamiginstitute.com" title="app@swamiginstitute.com">
-      <img src="SwamiG.gif" width="70" height="70" alt="" title="app@swamiginstitute.com">
-      <font size="7"><b>SwamiG Institute²</b></font>
-    </a> 
-    <br>Modules of Enlightenment for the Diaspora of North America</br>
-    <div style="color:var(--muted);font-size:14px">
-      Ifá • Ise'se' • Orisha | Divination Certification-oriented training
-      <a href="10.jpg"><img src="tn_10.jpg" width="50" height="37" alt="" title="" /></a>
-      <a href="2.jpg"><img src="tn_2.jpg" width="37" height="50" alt="" title="" /></a>
-      <a href="4cowrie.png"><img src="tn_4cowrie.jpg" width="50" height="50" alt="" title="" /></a>
-    </div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="SwamiG Institute application form powered by Cloudflare Pages Functions and D1.">
+  <title>Application | SwamiG Institute</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <style>
+    :root {
+      --bg: #07080d;
+      --panel: #11131c;
+      --panel-2: #171a26;
+      --ink: #f7f4e8;
+      --muted: #b9b7ad;
+      --gold: #d6b85a;
+      --gold-2: #f2dc91;
+      --purple: #7650c8;
+      --line: rgba(255,255,255,.12);
+      --danger: #ff8e8e;
+      --success: #91e6af;
+      --shadow: 0 22px 60px rgba(0,0,0,.42);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(118,80,200,.23), transparent 34rem),
+        radial-gradient(circle at 100% 18%, rgba(214,184,90,.15), transparent 30rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: var(--gold-2); }
+    .page { width: min(100% - 28px, 920px); margin: 0 auto; padding: 28px 0 48px; }
+    .card {
+      background: linear-gradient(180deg, rgba(23,26,38,.97), rgba(14,16,24,.97));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+    }
+
+    .brand-logo {
+      width: 76px;
+      height: 76px;
+      flex: 0 0 auto;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(214,184,90,.7);
+      box-shadow: 0 0 0 5px rgba(214,184,90,.08);
+    }
+
+    .brand h1 { margin: 0; font-size: clamp(1.7rem, 5vw, 2.65rem); line-height: 1.05; letter-spacing: -.03em; }
+    .brand h1 sup { color: var(--gold); font-size: .42em; top: -.8em; position: relative; }
+    .brand p { margin: 7px 0 0; color: var(--muted); }
+    .eyebrow { color: var(--gold-2); font-weight: 800; text-transform: uppercase; letter-spacing: .1em; font-size: .76rem; }
+
+    .gallery { display: flex; gap: 9px; margin-top: 13px; }
+    .gallery img { width: 52px; height: 52px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+
+    main { padding: clamp(22px, 5vw, 38px); }
+    main h2 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.5rem); letter-spacing: -.03em; }
+    .intro { margin: 8px 0 24px; color: var(--muted); max-width: 70ch; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-weight: 720; }
+    .required { color: #ff9a9a; }
+    .hint { color: var(--muted); font-size: .86rem; font-weight: 450; }
+
+    input, select, textarea {
+      width: 100%;
+      color: var(--ink);
+      background: #0d0f17;
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(214,184,90,.14); }
+    textarea { resize: vertical; min-height: 112px; }
+    select option { color: #111; }
+
+    .consent { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); font-size: .92rem; }
+    .consent input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--gold); flex: 0 0 auto; }
+    .honeypot { position: absolute !important; left: -10000px !important; opacity: 0 !important; pointer-events: none !important; }
+
+    .turnstile-wrap { min-height: 68px; display: flex; align-items: center; }
+    .turnstile-note { color: var(--muted); font-size: .9rem; }
+
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; }
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font: inherit;
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: .62; transform: none; }
+    .primary { color: #17120a; background: linear-gradient(135deg, var(--gold-2), var(--gold)); }
+    .secondary { color: var(--ink); background: #252938; border: 1px solid var(--line); }
+
+    .status { display: none; margin-top: 18px; padding: 13px 15px; border-radius: 12px; border: 1px solid var(--line); }
+    .status.show { display: block; }
+    .status.success { color: var(--success); background: rgba(50,155,88,.12); border-color: rgba(145,230,175,.3); }
+    .status.error { color: var(--danger); background: rgba(190,55,55,.12); border-color: rgba(255,142,142,.3); }
+
+    .test-panel {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px dashed rgba(214,184,90,.42);
+      background: rgba(214,184,90,.055);
+    }
+    .test-panel h3 { margin: 0 0 6px; }
+    .test-panel p { margin: 0 0 13px; color: var(--muted); }
+    #healthResult { margin-top: 11px; color: var(--muted); white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .86rem; }
+
+    footer { text-align: center; padding: 20px 16px 0; color: var(--muted); font-size: .88rem; }
+    footer nav { margin-top: 7px; }
+
+    @media (max-width: 680px) {
+      header { align-items: flex-start; }
+      .brand-logo { width: 62px; height: 62px; }
+      .grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .actions { align-items: stretch; }
+      .actions button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="card" aria-labelledby="application-title">
+      <header>
+        <a href="https://swamiginstitute.com" aria-label="Visit SwamiG Institute">
+          <img class="brand-logo" src="SwamiG.gif" alt="SwamiG Institute logo">
+        </a>
+        <div class="brand">
+          <div class="eyebrow">Modules of Enlightenment</div>
+          <h1>SwamiG Institute<sup>2</sup></h1>
+          <p>For the Diaspora of North America</p>
+          <div class="gallery" aria-label="Divination training imagery">
+            <img src="tn_10.jpg" alt="Divination implement">
+            <img src="tn_2.jpg" alt="Divination implement">
+            <img src="tn_4cowrie.jpg" alt="Four cowrie shells">
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="eyebrow">Ifá • Iṣẹ̀ṣe • Orisha</div>
+        <h2 id="application-title">Application</h2>
+        <p class="intro">Complete this application to begin. This Cloudflare test version stores approved submissions directly in a D1 database through a Pages Function.</p>
+
+        <form id="applicationForm" action="/submit" method="post">
+          <div class="grid">
+            <div class="field">
+              <label for="legal_name">Legal name <span class="required">*</span></label>
+              <input id="legal_name" name="legal_name" required maxlength="120" autocomplete="name" placeholder="First and last name">
+            </div>
+
+            <div class="field">
+              <label for="preferred_name">Preferred name with meaning</label>
+              <input id="preferred_name" name="preferred_name" maxlength="160" placeholder="Name and meaning, if different">
+            </div>
+
+            <div class="field">
+              <label for="email">Email <span class="required">*</span></label>
+              <input id="email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+            </div>
+
+            <div class="field">
+              <label for="phone">Phone <span class="hint">(WhatsApp is acceptable)</span></label>
+              <input id="phone" name="phone" type="tel" maxlength="40" autocomplete="tel" placeholder="+1 (___) ___-____">
+            </div>
+
+            <div class="field full">
+              <label for="interest">Primary interest</label>
+              <select id="interest" name="interest">
+                <option value="">Select one</option>
+                <option>Divination or spiritual consultation</option>
+                <option>Warriors preparation</option>
+                <option>Obi or cowrie divination training</option>
+                <option>Merindilogun training</option>
+                <option>Opele training</option>
+                <option>Priesthood or initiation pathway</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="message">Briefly describe what brings you to SwamiG Institute</label>
+              <textarea id="message" name="message" maxlength="2000" placeholder="Share your goal, question, or area of study."></textarea>
+            </div>
+
+            <div class="honeypot" aria-hidden="true">
+              <label for="website">Website</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="field full">
+              <label class="consent">
+                <input id="consent" name="consent" type="checkbox" value="yes" required>
+                <span>I consent to SwamiG Institute storing this information for application review and follow-up. <span class="required">*</span></span>
+              </label>
+            </div>
+
+            <div class="field full">
+              <div id="turnstileContainer" class="turnstile-wrap">
+                <span class="turnstile-note">Checking whether Turnstile is configured…</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="submitButton" class="primary" type="submit">Submit Application</button>
+            <a href="admin.html">Open the protected D1 review page</a>
+          </div>
+          <div id="formStatus" class="status" role="status" aria-live="polite"></div>
+        </form>
+
+        <section class="test-panel" aria-labelledby="d1-test-title">
+          <h3 id="d1-test-title">D1 connection test</h3>
+          <p>After deployment and database binding, this button confirms that the Pages Function can reach D1 and reports the number of saved applications.</p>
+          <button id="healthButton" class="secondary" type="button">Check D1 Connection</button>
+          <div id="healthResult" aria-live="polite"></div>
+        </section>
+      </main>
+    </section>
+
+    <footer>
+      © 2026 SwamiG Institute. Application data is used only for review and follow-up.
+      <nav><a href="https://swamiginstitute.com">SwamiGInstitute.com</a></nav>
+    </footer>
   </div>
 
-  <h2 style="margin:0 0 8px;font-size:28px;line-height:1.2;">Application</h2>
-  <p style="margin:0 0 18px;color:#475569;">Complete this application to begin. Submissions are securely delivered, tokenized then and logged.</p>
+  <script>
+    const form = document.getElementById('applicationForm');
+    const submitButton = document.getElementById('submitButton');
+    const formStatus = document.getElementById('formStatus');
+    const turnstileContainer = document.getElementById('turnstileContainer');
+    const healthButton = document.getElementById('healthButton');
+    const healthResult = document.getElementById('healthResult');
+    let turnstileWidgetId = null;
+    let turnstileEnabled = false;
 
-  <!-- ✅ FORM START -->
-  <form id="applicationForm" action="https://formspree.io/f/mvgvwkye" method="POST" novalidate>
-    <div style="display:grid;gap:14px;grid-template-columns:1fr 1fr;">
-      <label for="legal_name" style="display:flex;flex-direction:column;gap:6px;">
-        <span>Legal name <b style="color:#ef4444">*</b></span>
-        <input id="legal_name" name="legal_name" required placeholder="First Last" autocomplete="name" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
-      </label>
+    function showStatus(message, type) {
+      formStatus.textContent = message;
+      formStatus.className = `status show ${type}`;
+    }
 
-      <label for="preferred_name" style="display:flex;flex-direction:column;gap:6px;">
-        <span>Preferred name with meaning</span>
-        <input id="preferred_name" name="preferred_name" placeholder="If different" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
-      </label>
+    async function configureTurnstile() {
+      try {
+        const response = await fetch('/api/config', { headers: { Accept: 'application/json' } });
+        const config = await response.json();
+        if (!config.turnstileSiteKey) {
+          turnstileContainer.innerHTML = '<span class="turnstile-note">Turnstile is not enabled for this test deployment.</span>';
+          return;
+        }
 
-      <label for="email" style="display:flex;flex-direction:column;gap:6px;">
-        <span>Email <b style="color:#ef4444">*</b></span>
-        <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
-      </label>
+        const renderWidget = () => {
+          if (!window.turnstile) {
+            window.setTimeout(renderWidget, 120);
+            return;
+          }
+          turnstileContainer.innerHTML = '';
+          turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+            sitekey: config.turnstileSiteKey,
+            theme: 'dark'
+          });
+          turnstileEnabled = true;
+        };
+        renderWidget();
+      } catch (error) {
+        turnstileContainer.innerHTML = '<span class="turnstile-note">Turnstile configuration could not be loaded. D1 testing remains available.</span>';
+      }
+    }
 
-      <label for="phone" style="display:flex;flex-direction:column;gap:6px;">
-        <span>Phone (WhatsApp ok)</span>
-        <input id="phone" name="phone" placeholder="+1 (___) ___-____" autocomplete="tel" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;">
-      </label>
-    </div>
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      formStatus.className = 'status';
 
-    <button type="submit" style="margin-top:18px;padding:12px 22px;background-color:#4f46e5;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer;">
-      Submit Application
-    </button>
-  </form>
-  <!-- ✅ FORM END -->
-</section>
+      if (!form.reportValidity()) return;
 
-<!-- ✅ SCRIPT -->
-<script>
-document.getElementById("applicationForm").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const form = event.target;
-  const data = Object.fromEntries(new FormData(form).entries());
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting…';
 
-  try {
-    const response = await fetch(form.action, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Submission failed.');
+        }
+
+        showStatus(`Application saved successfully. Confirmation: ${result.submissionId}`, 'success');
+        form.reset();
+        if (turnstileEnabled && window.turnstile && turnstileWidgetId !== null) {
+          window.turnstile.reset(turnstileWidgetId);
+        }
+      } catch (error) {
+        showStatus(error.message || 'A network error occurred. Please try again.', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit Application';
+      }
     });
 
-    if (response.ok) {
-      alert("✅ Your application was submitted successfully. Thank you! We acknowledge your courage");
-      form.reset();
-    } else {
-      alert("⚠️ Submission failed. Please try again.");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("⚠️ Network error. Please check your connection.");
-  }
-});
-</script>
+    healthButton.addEventListener('click', async () => {
+      healthButton.disabled = true;
+      healthResult.textContent = 'Checking…';
+      try {
+        const response = await fetch('/api/health', { headers: { Accept: 'application/json' } });
+        const data = await response.json().catch(() => ({}));
+        healthResult.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        healthResult.textContent = `Connection test failed: ${error.message}`;
+      } finally {
+        healthButton.disabled = false;
+      }
+    });
+
+    configureTurnstile();
+  </script>
+</body>
+</html>
