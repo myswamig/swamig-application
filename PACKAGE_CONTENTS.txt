@@ -1,0 +1,53 @@
+SGI APPLICATION D1 BUNDLE — PACKAGE CONTENTS
+=============================================
+
+START_HERE.txt
+  Ten-step deployment checklist.
+
+README.md
+  Full Cloudflare Pages, D1, Turnstile, admin, migration, and troubleshooting guide.
+
+D1_POPULATION_CHECK.md
+  Detailed browser, Cloudflare Console, Wrangler, confirmation-number, and JSON checks.
+
+VERIFY_D1.sql
+  Read-only SQL checks for table structure, record count, latest rows, and JSON validity.
+
+schema.sql
+  Complete applications table for a new or empty D1 database.
+
+migrations/0002_expand_long_application.sql
+  Adds application_data and status to the earlier applications table without deleting rows.
+
+index.html
+  Six-step SwamiG Institute application form.
+
+functions/submit.js
+  Validates Turnstile and form requirements, then inserts the summary plus complete JSON into D1.
+
+functions/api/config.js
+  Safely returns only the public Turnstile site key.
+
+functions/api/health.js
+  Public non-PII D1 readiness and population-count endpoint.
+
+functions/api/submissions.js
+  ADMIN_TOKEN-protected application review endpoint.
+
+admin.html
+  Protected browser review page for recent D1 applications and complete application_data JSON.
+
+d1-check.html
+  Browser interface for /api/health and D1 population totals.
+
+wrangler.toml.example
+  Local/CLI example. Replace the database ID and rename only when using Wrangler locally.
+
+_routes.json, _headers, .gitignore
+  Pages Functions routing, security/cache headers, and secret/local-file exclusions.
+
+SwamiG.gif, tn_10.jpg, tn_2.jpg, tn_4cowrie.jpg
+  Existing project branding and divination images used by the form.
+
+SHA256SUMS.txt
+  Integrity hashes for package files.

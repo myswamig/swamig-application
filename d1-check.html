@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>D1 Connection and Population Check | SwamiG Institute</title>
+  <style>
+    :root{--bg:#080910;--panel:#141722;--ink:#f5f2e7;--muted:#b9b7ad;--gold:#d6b85a;--gold2:#f2dc91;--line:rgba(255,255,255,.13);--good:#91e6af;--bad:#ff9a9a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}main{width:min(100% - 28px,820px);margin:36px auto}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}a{color:var(--gold2)}h1{margin-top:0}button{border:0;border-radius:11px;padding:12px 18px;background:var(--gold);color:#1b1509;font-weight:850;cursor:pointer}button:disabled{opacity:.6}pre{margin-top:18px;padding:16px;min-height:180px;overflow:auto;border-radius:12px;background:#05060a;border:1px solid var(--line);color:#d9e7ff;white-space:pre-wrap}.good{color:var(--good)}.bad{color:var(--bad)}.links{margin-top:16px;color:var(--muted)}
+  </style>
+</head>
+<body>
+<main><section class="panel"><h1>D1 Connection and Population Check</h1><p>This public check shows database readiness and record counts only. It does not expose applicant names or answers.</p><button id="checkButton" type="button">Check D1 Now</button><p id="summary"></p><pre id="output">Select “Check D1 Now.”</pre><div class="links"><a href="index.html">Application</a> · <a href="admin.html">Protected review</a></div></section></main>
+<script>
+const button=document.getElementById('checkButton'),summary=document.getElementById('summary'),output=document.getElementById('output');
+button.addEventListener('click',async()=>{button.disabled=true;summary.className='';summary.textContent='Checking…';try{const response=await fetch('/api/health',{headers:{Accept:'application/json'},cache:'no-store'});const data=await response.json().catch(()=>({}));output.textContent=JSON.stringify(data,null,2);if(!response.ok||!data.ok)throw new Error(data.error||'D1 check failed.');summary.className='good';summary.textContent=`Connected. ${data.totalApplications} total application(s); ${data.fullApplicationRows} row(s) contain long-form application_data.`}catch(error){summary.className='bad';summary.textContent=error.message}finally{button.disabled=false}});
+</script>
+</body>
+</html>

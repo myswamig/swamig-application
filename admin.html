@@ -4,108 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>D1 Application Review | SwamiG Institute</title>
+  <title>Protected D1 Application Review | SwamiG Institute</title>
   <style>
-    :root { --bg:#080910; --panel:#141722; --ink:#f5f2e7; --muted:#b9b7ad; --gold:#d6b85a; --line:rgba(255,255,255,.13); --danger:#ff9a9a; }
-    * { box-sizing:border-box; }
-    body { margin:0; color:var(--ink); background:var(--bg); font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
-    main { width:min(100% - 28px, 1180px); margin:28px auto 60px; }
-    a { color:#f2dc91; }
-    .top { display:flex; align-items:center; justify-content:space-between; gap:15px; flex-wrap:wrap; margin-bottom:18px; }
-    h1 { margin:0; }
-    .panel { padding:18px; background:var(--panel); border:1px solid var(--line); border-radius:17px; }
-    .login { display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:10px; }
-    input,button { border-radius:10px; padding:11px 13px; font:inherit; }
-    input { color:var(--ink); background:#0d0f17; border:1px solid var(--line); }
-    button { border:0; background:var(--gold); color:#1b1509; font-weight:800; cursor:pointer; }
-    button:disabled { opacity:.6; cursor:wait; }
-    #status { color:var(--muted); margin:12px 0 0; }
-    .table-wrap { margin-top:18px; overflow:auto; border:1px solid var(--line); border-radius:15px; }
-    table { width:100%; min-width:980px; border-collapse:collapse; background:var(--panel); }
-    th,td { text-align:left; vertical-align:top; padding:12px; border-bottom:1px solid var(--line); }
-    th { color:#f2dc91; background:#1b1f2c; position:sticky; top:0; }
-    td { color:#dedbd1; }
-    .message { max-width:380px; white-space:pre-wrap; }
-    .empty { padding:28px; text-align:center; color:var(--muted); }
-    @media(max-width:600px){ .login{grid-template-columns:1fr;} }
+    :root{--bg:#080910;--panel:#141722;--panel2:#0d0f17;--ink:#f5f2e7;--muted:#b9b7ad;--gold:#d6b85a;--gold2:#f2dc91;--line:rgba(255,255,255,.13);--danger:#ff9a9a;--success:#91e6af}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(circle at 10% 0%,rgba(118,80,200,.18),transparent 30rem),var(--bg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}main{width:min(100% - 28px,1180px);margin:28px auto 60px}a{color:var(--gold2)}.top{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:18px}.top h1{margin:0}.logo{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(214,184,90,.65)}.panel{padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:17px}.login{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px}input,button{border-radius:10px;padding:11px 13px;font:inherit}input{color:var(--ink);background:var(--panel2);border:1px solid var(--line)}button{border:0;background:var(--gold);color:#1b1509;font-weight:800;cursor:pointer}button:disabled{opacity:.6;cursor:wait}#status{color:var(--muted);margin:12px 0 0}.application{margin-top:18px;padding:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}.application summary{cursor:pointer;padding:16px 18px;background:#1b1f2c;font-weight:800;color:var(--gold2)}.content{padding:18px}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.summary-grid div{padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);overflow-wrap:anywhere}.summary-grid strong{display:block;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}.message{white-space:pre-wrap}.json-title{margin:20px 0 8px}pre{margin:0;padding:15px;max-height:620px;overflow:auto;border-radius:12px;background:#05060a;border:1px solid var(--line);color:#d9e7ff;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.empty{text-align:center;color:var(--muted);padding:30px}.danger{color:var(--danger)!important}.success{color:var(--success)!important}@media(max-width:760px){.login,.summary-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <main>
-  <div class="top">
-    <div>
-      <h1>D1 Application Review</h1>
-      <div><a href="index.html">← Return to application</a></div>
-    </div>
-    <img src="SwamiG.gif" width="64" height="64" alt="SwamiG Institute logo" style="border-radius:50%;object-fit:cover">
-  </div>
-
+  <div class="top"><div><h1>Protected D1 Application Review</h1><div><a href="index.html">← Return to application</a> · <a href="d1-check.html">D1 population check</a></div></div><img class="logo" src="SwamiG.gif" alt="SwamiG Institute logo"></div>
   <section class="panel">
-    <form id="tokenForm" class="login">
-      <input id="adminToken" type="password" autocomplete="current-password" placeholder="Enter the ADMIN_TOKEN secret" required>
-      <button id="loadButton" type="submit">Load Applications</button>
-    </form>
-    <p id="status">The token is sent only as an Authorization header and is not stored by this page.</p>
+    <form id="tokenForm" class="login"><input id="adminToken" type="password" autocomplete="current-password" placeholder="Enter the ADMIN_TOKEN secret" required><button id="loadButton" type="submit">Load Applications</button></form>
+    <p id="status">The token is sent only in the Authorization header and is not stored by this page.</p>
   </section>
-
   <div id="results"></div>
 </main>
 <script>
-  const form = document.getElementById('tokenForm');
-  const tokenInput = document.getElementById('adminToken');
-  const loadButton = document.getElementById('loadButton');
-  const status = document.getElementById('status');
-  const results = document.getElementById('results');
-
-  function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[char]));
-  }
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    loadButton.disabled = true;
-    status.textContent = 'Loading…';
-    results.innerHTML = '';
-
-    try {
-      const response = await fetch('/api/submissions?limit=100', {
-        headers: { Authorization: `Bearer ${tokenInput.value}`, Accept: 'application/json' }
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || 'Unable to load applications.');
-
-      status.textContent = `${data.count} application(s) loaded.`;
-      if (!data.applications.length) {
-        results.innerHTML = '<div class="panel empty" style="margin-top:18px">No applications have been submitted.</div>';
-        return;
-      }
-
-      const rows = data.applications.map(item => `
-        <tr>
-          <td>${escapeHtml(item.created_at)}</td>
-          <td>${escapeHtml(item.submission_id)}</td>
-          <td>${escapeHtml(item.legal_name)}</td>
-          <td>${escapeHtml(item.preferred_name)}</td>
-          <td><a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a></td>
-          <td>${escapeHtml(item.phone)}</td>
-          <td>${escapeHtml(item.interest)}</td>
-          <td class="message">${escapeHtml(item.message)}</td>
-        </tr>`).join('');
-
-      results.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Submitted</th><th>Confirmation</th><th>Legal name</th><th>Preferred name</th><th>Email</th><th>Phone</th><th>Interest</th><th>Message</th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>`;
-    } catch (error) {
-      status.textContent = error.message;
-      status.style.color = 'var(--danger)';
-    } finally {
-      loadButton.disabled = false;
-    }
-  });
+(() => {
+  const form=document.getElementById('tokenForm');
+  const tokenInput=document.getElementById('adminToken');
+  const loadButton=document.getElementById('loadButton');
+  const status=document.getElementById('status');
+  const results=document.getElementById('results');
+  const text=(value)=>value===null||value===undefined||value===''?'—':String(value);
+  function cell(label,value,className=''){const box=document.createElement('div');if(className)box.className=className;const strong=document.createElement('strong');strong.textContent=label;box.append(strong,document.createTextNode(text(value)));return box}
+  function renderApplication(item,index){const details=document.createElement('details');details.className='application';if(index===0)details.open=true;const summary=document.createElement('summary');summary.textContent=`${text(item.created_at)} — ${text(item.legal_name)} — ${text(item.status)}`;const content=document.createElement('div');content.className='content';const grid=document.createElement('div');grid.className='summary-grid';grid.append(cell('Confirmation',item.submission_id),cell('Legal name',item.legal_name),cell('Preferred name',item.preferred_name),cell('Email',item.email),cell('Phone',item.phone),cell('Country',item.country),cell('Primary interest',item.interest),cell('Status',item.status),cell('Created',item.created_at));const message=cell('Reason for applying',item.message,'message');message.style.gridColumn='1 / -1';grid.append(message);const title=document.createElement('h3');title.className='json-title';title.textContent='Complete application_data JSON';const pre=document.createElement('pre');pre.textContent=JSON.stringify(item.application_data||{},null,2);content.append(grid,title,pre);details.append(summary,content);return details}
+  form.addEventListener('submit',async event=>{event.preventDefault();loadButton.disabled=true;status.className='';status.textContent='Loading…';results.replaceChildren();try{const response=await fetch('/api/submissions?limit=100',{headers:{Authorization:`Bearer ${tokenInput.value}`,Accept:'application/json'},cache:'no-store'});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'Unable to load applications.');status.textContent=`${data.count} application(s) loaded.`;status.className='success';if(!data.applications.length){const empty=document.createElement('div');empty.className='panel empty';empty.style.marginTop='18px';empty.textContent='No applications have been submitted.';results.append(empty);return}data.applications.forEach((item,index)=>results.append(renderApplication(item,index)))}catch(error){status.textContent=error.message;status.className='danger'}finally{loadButton.disabled=false}});
+})();
 </script>
 </body>
 </html>
