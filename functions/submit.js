@@ -4,9 +4,8 @@ const JSON_HEADERS = {
   'X-Content-Type-Options': 'nosniff'
 };
 
-const MAX_REQUEST_BYTES = 150_000;
+const MAX_REQUEST_BYTES = 40_000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 function json(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
@@ -23,21 +22,6 @@ function cleanText(value, maxLength = 500) {
   const scalar = firstValue(value);
   if (typeof scalar !== 'string') return '';
   return scalar.trim().slice(0, maxLength);
-}
-
-function cleanList(value, maxItems = 30, maxItemLength = 160) {
-  const values = Array.isArray(value)
-    ? value
-    : typeof value === 'string' && value
-      ? [value]
-      : [];
-
-  return [...new Set(
-    values
-      .filter(item => typeof item === 'string')
-      .map(item => item.trim().slice(0, maxItemLength))
-      .filter(Boolean)
-  )].slice(0, maxItems);
 }
 
 function formDataToObject(formData) {
@@ -78,12 +62,18 @@ async function readPayload(request) {
   throw new Error('UNSUPPORTED_CONTENT_TYPE');
 }
 
+function requireText(value, label, maxLength) {
+  const cleaned = cleanText(value, maxLength);
+  if (!cleaned) throw new Error(`REQUIRED:${label}`);
+  return cleaned;
+}
+
 async function verifyTurnstile(request, env, token) {
   if (!env.TURNSTILE_SECRET_KEY) {
     return {
       success: false,
       status: 503,
-      reason: 'Turnstile is not configured on the server.'
+      reason: 'Security verification is not configured on the server.'
     };
   }
 
@@ -91,69 +81,56 @@ async function verifyTurnstile(request, env, token) {
     return {
       success: false,
       status: 403,
-      reason: 'Please complete the security check.'
+      reason: 'Please complete the security verification.'
     };
   }
 
-  const verificationData = new FormData();
-  verificationData.append('secret', env.TURNSTILE_SECRET_KEY);
-  verificationData.append('response', token);
-  verificationData.append('idempotency_key', crypto.randomUUID());
+  const data = new FormData();
+  data.append('secret', env.TURNSTILE_SECRET_KEY);
+  data.append('response', token);
+  data.append('idempotency_key', crypto.randomUUID());
 
   const remoteIp = request.headers.get('CF-Connecting-IP');
-  if (remoteIp) verificationData.append('remoteip', remoteIp);
-
-  let response;
-  let outcome;
+  if (remoteIp) data.append('remoteip', remoteIp);
 
   try {
-    response = await fetch(
+    const response = await fetch(
       'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      { method: 'POST', body: verificationData }
+      { method: 'POST', body: data }
     );
-    outcome = await response.json();
+    const result = await response.json();
+
+    if (!response.ok || !result?.success) {
+      console.warn('Turnstile rejected request:', result?.['error-codes'] || []);
+      return {
+        success: false,
+        status: 403,
+        reason: 'Security verification failed. Refresh the page and try again.'
+      };
+    }
+
+    const expectedHostname = cleanText(env.TURNSTILE_EXPECTED_HOSTNAME, 255);
+    if (expectedHostname && result.hostname !== expectedHostname) {
+      console.warn('Turnstile hostname mismatch:', {
+        expected: expectedHostname,
+        received: result.hostname
+      });
+      return {
+        success: false,
+        status: 403,
+        reason: 'Security verification was issued for the wrong website.'
+      };
+    }
+
+    return { success: true };
   } catch (error) {
-    console.error('Turnstile Siteverify request failed:', error);
+    console.error('Turnstile verification failed:', error);
     return {
       success: false,
       status: 503,
-      reason: 'The security check could not be verified. Please try again.'
+      reason: 'Security verification is temporarily unavailable.'
     };
   }
-
-  if (!response.ok || !outcome?.success) {
-    console.warn('Turnstile rejected a submission:', outcome?.['error-codes'] || []);
-    return {
-      success: false,
-      status: 403,
-      reason: 'Security verification failed. Please refresh the page and try again.'
-    };
-  }
-
-  const expectedHostname = cleanText(env.TURNSTILE_EXPECTED_HOSTNAME, 255);
-  if (expectedHostname && outcome.hostname !== expectedHostname) {
-    console.warn('Turnstile hostname mismatch:', {
-      expected: expectedHostname,
-      received: outcome.hostname
-    });
-    return {
-      success: false,
-      status: 403,
-      reason: 'Security verification was issued for the wrong website.'
-    };
-  }
-
-  return { success: true };
-}
-
-function requireText(value, label, maxLength) {
-  const cleaned = cleanText(value, maxLength);
-  if (!cleaned) throw new Error(`REQUIRED:${label}`);
-  return cleaned;
-}
-
-function hasEvery(list, requiredValues) {
-  return requiredValues.every(value => list.includes(value));
 }
 
 export async function onRequestPost(context) {
@@ -165,100 +142,38 @@ export async function onRequestPost(context) {
 
   const contentLength = Number(request.headers.get('content-length') || 0);
   if (contentLength > MAX_REQUEST_BYTES) {
-    return json({ error: 'The application is too large to process.' }, 413);
+    return json({ error: 'The request is too large to process.' }, 413);
   }
 
   try {
     const payload = await readPayload(request);
 
-    // Honeypot: return a normal-looking success response but do not store the entry.
+    // Honeypot: quietly discard obvious automated submissions.
     if (cleanText(payload.website, 200)) {
       return json({ ok: true, submissionId: 'received' }, 201);
     }
 
-    const legalName = requireText(payload.legal_name, 'Legal name', 120);
-    const preferredName = cleanText(payload.preferred_name, 160);
-    const nameMeaning = cleanText(payload.name_meaning, 300);
-    const email = requireText(payload.email, 'Email address', 254).toLowerCase();
-    const phone = requireText(payload.phone, 'Telephone number', 40);
-    const city = requireText(payload.city, 'City', 100);
-    const stateRegion = requireText(payload.state_region, 'State or region', 100);
-    const applicantCountry = requireText(payload.applicant_country, 'Country', 100);
-    const timezone = requireText(payload.timezone, 'Time zone', 100);
+    const legalName = requireText(payload.legal_name, 'Full name', 120);
+    const preferredName = cleanText(payload.preferred_name, 120);
+    const email = requireText(payload.email, 'Email', 254).toLowerCase();
+    const phone = cleanText(payload.phone, 40);
     const contactMethod = requireText(payload.contact_method, 'Preferred contact method', 40);
-    const ageConfirmed = cleanText(payload.age_confirmed, 10);
-
-    const currentPath = cleanText(payload.current_path, 300);
-    const yearsPractice = cleanText(payload.years_practice, 80);
-    const initiations = cleanList(payload.initiations, 20, 120);
-    const initiationDetails = cleanText(payload.initiation_details, 3000);
-    const divinationSystems = cleanList(payload.divination_systems, 20, 120);
-    const trainingDetails = cleanText(payload.training_details, 3500);
-    const dailyPractice = cleanText(payload.daily_practice, 2500);
-
-    const interest = requireText(payload.interest, 'Primary area of interest', 160);
-    const additionalInterests = cleanList(payload.additional_interests, 20, 160);
-    const message = requireText(payload.message, 'Reason for applying', 2000);
-    const desiredOutcome = cleanText(payload.desired_outcome, 2500);
-    const previousSgi = cleanText(payload.previous_sgi, 20);
-    const previousSgiDetails = cleanText(payload.previous_sgi_details, 2200);
-    const referralSource = cleanText(payload.referral_source, 160);
-
-    const weeklyHours = requireText(payload.weekly_hours, 'Weekly study commitment', 80);
-    const startTiming = cleanText(payload.start_timing, 100);
-    const sundayZoom = requireText(payload.sunday_zoom, 'Sunday Zoom availability', 40);
-    const technology = cleanList(payload.technology, 10, 120);
-    const readiness = cleanList(payload.readiness, 10, 160);
-    const schedulingLimits = cleanText(payload.scheduling_limits, 2200);
-    const barriers = cleanText(payload.barriers, 2200);
-
-    const strengths = cleanText(payload.strengths, 2500);
-    const growthAreas = cleanText(payload.growth_areas, 2500);
-    const serviceVision = cleanText(payload.service_vision, 2800);
-    const ethicalChallenge = cleanText(payload.ethical_challenge, 3000);
-    const questionsForSgi = cleanText(payload.questions_for_sgi, 2500);
-    const anythingElse = cleanText(payload.anything_else, 2500);
-
-    const accuracyAgreement = cleanText(payload.accuracy_agreement, 10);
-    const conductAgreement = cleanText(payload.conduct_agreement, 10);
-    const divinationAgreement = cleanText(payload.divination_agreement, 10);
-    const noGuaranteeAgreement = cleanText(payload.no_guarantee_agreement, 10);
+    const country = cleanText(payload.country, 100);
+    const interest = requireText(payload.interest, 'Divination service', 160);
+    const concernArea = requireText(payload.concern_area, 'Primary area', 160);
+    const sessionFormat = cleanText(payload.session_format, 80);
+    const message = requireText(payload.message, 'Main divination matter', 2500);
+    const availability = cleanText(payload.availability, 300);
+    const guidanceAcknowledgment = cleanText(payload.guidance_acknowledgment, 10);
     const consent = cleanText(payload.consent, 10);
-    const signatureName = requireText(payload.signature_name, 'Typed signature', 120);
-    const signatureDate = requireText(payload.signature_date, 'Signature date', 10);
     const turnstileToken = cleanText(payload['cf-turnstile-response'], 2048);
 
     if (!EMAIL_PATTERN.test(email)) {
-      return json({ error: 'A valid email address is required.' }, 400);
+      return json({ error: 'Enter a valid email address.' }, 400);
     }
 
-    if (ageConfirmed !== 'yes') {
-      return json({ error: 'You must confirm that you are at least 18 years old.' }, 400);
-    }
-
-    const requiredReadiness = [
-      'Study',
-      'Practice',
-      'Communication',
-      'Financial responsibility'
-    ];
-
-    if (!hasEvery(readiness, requiredReadiness)) {
-      return json({ error: 'All program-readiness statements must be accepted.' }, 400);
-    }
-
-    if (
-      accuracyAgreement !== 'yes' ||
-      conductAgreement !== 'yes' ||
-      divinationAgreement !== 'yes' ||
-      noGuaranteeAgreement !== 'yes' ||
-      consent !== 'yes'
-    ) {
-      return json({ error: 'All required agreements and consent statements must be accepted.' }, 400);
-    }
-
-    if (!DATE_PATTERN.test(signatureDate)) {
-      return json({ error: 'A valid signature date is required.' }, 400);
+    if (guidanceAcknowledgment !== 'yes' || consent !== 'yes') {
+      return json({ error: 'Both agreements must be accepted.' }, 400);
     }
 
     const turnstile = await verifyTurnstile(request, env, turnstileToken);
@@ -268,74 +183,33 @@ export async function onRequestPost(context) {
 
     const submissionId = crypto.randomUUID();
     const submittedAt = new Date().toISOString();
-    const networkCountry = cleanText(request.cf?.country || '', 8);
-    const userAgent = cleanText(request.headers.get('user-agent') || '', 500);
 
-    // Build the stored JSON on the server rather than trusting the hidden
-    // application_data field supplied by the browser.
     const applicationData = JSON.stringify({
-      form_version: 'SGI-LONG-2026-07',
+      form_version: 'SGI-DIVINATION-2026-07',
+      request_type: 'Divination Service',
       submitted_at: submittedAt,
       applicant: {
         legal_name: legalName,
         preferred_name: preferredName,
-        name_meaning: nameMeaning,
         email,
         phone,
-        city,
-        state_region: stateRegion,
-        country: applicantCountry,
-        timezone,
         contact_method: contactMethod,
-        age_confirmed: true
+        country
       },
-      spiritual_background: {
-        current_path: currentPath,
-        years_practice: yearsPractice,
-        initiations,
-        initiation_details: initiationDetails,
-        divination_systems: divinationSystems,
-        training_details: trainingDetails,
-        daily_practice: dailyPractice
-      },
-      program_interest: {
-        primary_interest: interest,
-        additional_interests: additionalInterests,
-        reason_for_applying: message,
-        desired_outcome: desiredOutcome,
-        previous_sgi: previousSgi,
-        previous_sgi_details: previousSgiDetails,
-        referral_source: referralSource
-      },
-      commitment: {
-        weekly_hours: weeklyHours,
-        start_timing: startTiming,
-        sunday_zoom: sundayZoom,
-        technology,
-        readiness,
-        scheduling_limits: schedulingLimits,
-        barriers
-      },
-      personal_statements: {
-        strengths,
-        growth_areas: growthAreas,
-        service_vision: serviceVision,
-        ethical_challenge: ethicalChallenge,
-        questions_for_sgi: questionsForSgi,
-        anything_else: anythingElse
+      divination_request: {
+        service: interest,
+        concern_area: concernArea,
+        main_matter: message,
+        preferred_session_format: sessionFormat,
+        availability
       },
       agreements: {
-        accuracy: true,
-        conduct: true,
-        divination_confirmation: true,
-        no_guarantee: true,
-        consent: true,
-        signature_name: signatureName,
-        signature_date: signatureDate
+        spiritual_guidance_acknowledgment: true,
+        storage_and_follow_up_consent: true
       },
       submission_metadata: {
-        network_country: networkCountry,
-        user_agent: userAgent
+        network_country: cleanText(request.cf?.country || '', 8),
+        user_agent: cleanText(request.headers.get('user-agent') || '', 500)
       }
     });
 
@@ -360,7 +234,7 @@ export async function onRequestPost(context) {
       phone,
       interest,
       message,
-      applicantCountry,
+      country,
       applicationData
     ).run();
 
@@ -370,7 +244,7 @@ export async function onRequestPost(context) {
 
     return json({
       ok: true,
-      message: 'Application received and saved to D1.',
+      message: 'Divination request received and saved.',
       submissionId
     }, 201);
   } catch (error) {
@@ -380,23 +254,23 @@ export async function onRequestPost(context) {
     }
 
     if (error?.message === 'INVALID_PAYLOAD') {
-      return json({ error: 'The submitted application data is invalid.' }, 400);
+      return json({ error: 'The submitted data is invalid.' }, 400);
     }
 
     if (error?.message === 'UNSUPPORTED_CONTENT_TYPE') {
       return json({ error: 'Unsupported submission format.' }, 415);
     }
 
-    console.error('Application submission failed:', error);
+    console.error('Divination request failed:', error);
     return json({
-      error: 'The application could not be saved. Confirm that the D1 application_data migration has been run.'
+      error: 'The divination request could not be saved. Confirm that the D1 application_data migration has been run.'
     }, 500);
   }
 }
 
 export function onRequestGet() {
   return json(
-    { error: 'Use POST to submit an application.' },
+    { error: 'Use POST to submit a divination request.' },
     405,
     { Allow: 'POST' }
   );
