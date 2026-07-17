@@ -1,10 +1,14 @@
-export function onRequestGet({ env }) {
+const HEADERS = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'Cache-Control': 'no-store',
+  'X-Content-Type-Options': 'nosniff'
+};
+
+export function onRequestGet(context) {
   return new Response(JSON.stringify({
-    turnstileSiteKey: env.TURNSTILE_SITE_KEY || ''
+    turnstileSiteKey: context.env.TURNSTILE_SITE_KEY || ''
   }), {
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store'
-    }
+    status: 200,
+    headers: HEADERS
   });
 }
